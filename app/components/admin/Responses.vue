@@ -92,7 +92,7 @@ function remove(r: AdminRow) {
       </div>
     </div>
 
-    <div class="flex gap-1.5 overflow-x-auto border-b border-[#E7E5E4] px-4 py-2.5" role="group" aria-label="Filtrar por estado">
+    <div class="scrollbar-none flex gap-1.5 overflow-x-auto border-b border-[#E7E5E4] px-4 py-2.5" role="group" aria-label="Filtrar por estado">
       <button
         v-for="opt in (['todos', 'si', 'no', 'pendiente'] as const)"
         :key="opt"

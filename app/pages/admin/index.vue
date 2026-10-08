@@ -110,7 +110,7 @@ function onTabKey(e: KeyboardEvent, i: number) {
       </div>
 
       <div class="mt-6">
-        <div role="tablist" aria-label="Secciones del panel" class="flex gap-1 overflow-x-auto rounded-xl bg-[#E7E5E4]/70 p-1">
+        <div role="tablist" aria-label="Secciones del panel" class="scrollbar-none flex gap-1 overflow-x-auto rounded-xl bg-[#E7E5E4]/70 p-1">
           <button
             v-for="(t, i) in TABS"
             :id="`tab-${t.id}`"

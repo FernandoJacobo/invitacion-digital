@@ -85,6 +85,54 @@ button:disabled {
   background: color-mix(in oklab, var(--c-acento) 35%, transparent);
 }
 
+/* ───────────────────────── Barras de scroll ─────────────────────────
+   Delgadas y con el acento del tema (en el navegador interno de WhatsApp/Instagram y en
+   Android con barra "clásica" se veía la gris del sistema con canal blanco). */
+
+html {
+  --sb-thumb: color-mix(in oklab, var(--c-acento) 55%, transparent);
+  --sb-thumb-hover: color-mix(in oklab, var(--c-acento-tinta) 80%, transparent);
+}
+
+/* Firefox y Chrome ≥ 121 (estándar). */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sb-thumb) transparent;
+}
+
+/* Safari / WebKit (los navegadores con soporte estándar ignoran esto). */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sb-thumb-hover);
+}
+
+/* En pantallas táctiles la barra de la página es solo un indicador: más fina aún. */
+@media (pointer: coarse) {
+  ::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+  }
+}
+
+/* Filas que se deslizan con el dedo (pestañas, chips): sin barra visible. */
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* Bloqueo de scroll (sobre cerrado, lightbox). */
 html.no-scroll,
 html.no-scroll body {
