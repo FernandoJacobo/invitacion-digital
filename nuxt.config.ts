@@ -9,7 +9,7 @@ import { staticCoverHtml } from './app/utils/cover'
 import { imageSrcset, imageUrl } from './app/utils/images'
 
 /** URL pública del sitio (para `og:url`). Cámbiala o define NUXT_PUBLIC_SITE_URL al desplegar. */
-const siteUrl = (process.env.NUXT_PUBLIC_SITE_URL || 'https://invitacion-digital-demo.pages.dev').replace(/\/+$/, '')
+const siteUrl = (process.env.NUXT_PUBLIC_SITE_URL || 'https://invitacion-digital-at0.pages.dev').replace(/\/+$/, '')
 
 const home = {
   title: 'Invitaciones digitales para boda y XV años · Demo JacoboDev',

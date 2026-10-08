@@ -4,6 +4,8 @@ Demo de **invitaciones digitales animadas** para bodas y XV años, construida so
 
 Pieza de portafolio de **JacoboDev** · [jacobodev.pages.dev](https://jacobodev.pages.dev)
 
+**Demo en vivo:** [invitacion-digital-at0.pages.dev](https://invitacion-digital-at0.pages.dev) · [Boda](https://invitacion-digital-at0.pages.dev/boda) · [XV años](https://invitacion-digital-at0.pages.dev/xv) · [Invitación personalizada](https://invitacion-digital-at0.pages.dev/boda?invitado=Familia%20Perez&pases=4) · [Panel](https://invitacion-digital-at0.pages.dev/admin)
+
 | Selector de demos | Panel de confirmaciones |
 | --- | --- |
 | ![Selector de demos](docs/capturas/selector.jpg) | ![Panel](docs/capturas/admin-confirmaciones.jpg) |
@@ -76,9 +78,9 @@ Credenciales del panel: **`demo` / `demo123`**.
 1. Conecta el repositorio en Cloudflare Pages.
 2. **Build command:** `npm run generate`
 3. **Build output directory:** `.output/public`
-4. (Opcional) Variable de entorno `NUXT_PUBLIC_SITE_URL` con la URL final (se usa en `og:url`). Por defecto: `https://invitacion-digital-demo.pages.dev`.
+4. (Opcional) Variable de entorno `NUXT_PUBLIC_SITE_URL` con la URL final (se usa en `og:url`). Por defecto: `https://invitacion-digital-at0.pages.dev`.
 
-Cada ruta tiene su propio HTML (`index.html`, `boda.html`, `xv.html`, `admin.html`, `admin/login.html`), así que recargar cualquier ruta funciona con o sin parámetros de consulta. `public/_redirects` incluye `/* /index.html 200` como respaldo para rutas no generadas. Si Cloudflare llegara a ignorar esa regla (la marca como bucle en algunos casos), el sitio sigue funcionando: las rutas reales existen como archivos y `404.html` es la misma app, que muestra la página de "invitación no encontrada".
+Cada ruta tiene su propio HTML (`index.html`, `boda.html`, `xv.html`, `admin.html`, `admin/login.html`), así que recargar cualquier ruta funciona con o sin parámetros de consulta. `public/_redirects` incluye `/* /index.html 200` como respaldo para rutas no generadas. En el despliegue actual Cloudflare no aplica esa regla (una ruta inexistente responde 404), pero no hace falta: las rutas reales existen como archivos y `404.html` es la misma app, que muestra la página de "invitación no encontrada".
 
 ## Crear una invitación nueva para un cliente
 
