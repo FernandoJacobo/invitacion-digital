@@ -47,14 +47,16 @@ useSeoMeta({
           :style="themeStyle(e)"
           :data-theme="e.tema.id"
         >
-          <UiSmartImage
-            :src="e.fotoPrincipal.src"
-            :alt="e.fotoPrincipal.alt"
-            sizes="(min-width: 768px) 560px, 100vw"
-            class="absolute inset-0 -z-10"
-            img-class="transition-transform duration-[1.6s] ease-out group-hover:scale-105"
-            :eager="true"
-          />
+          <div class="absolute inset-0 -z-10">
+            <UiSmartImage
+              :src="e.fotoPrincipal.src"
+              :alt="e.fotoPrincipal.alt"
+              sizes="(min-width: 768px) 560px, 100vw"
+              class="size-full"
+              img-class="transition-transform duration-[1.6s] ease-out group-hover:scale-105"
+              :eager="true"
+            />
+          </div>
           <div class="demo-scrim absolute inset-0 -z-10" aria-hidden="true" />
 
           <p class="text-xs font-medium tracking-[0.3em] text-white/85 uppercase">

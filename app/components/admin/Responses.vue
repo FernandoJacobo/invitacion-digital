@@ -158,13 +158,13 @@ function remove(r: AdminRow) {
             <td class="px-4 py-3 font-medium">
               {{ r.nombre }}
             </td>
-            <td v-if="evento === 'todos'" class="px-4 py-3 text-[#57534E]">
+            <td v-if="evento === 'todos'" class="whitespace-nowrap px-4 py-3 text-[#57534E]">
               {{ eventLabel(r.evento) }}
             </td>
             <td class="px-4 py-3">
               <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset" :class="STATUS[r.estado].cls">{{ STATUS[r.estado].label }}</span>
             </td>
-            <td class="px-4 py-3 text-right tabular-nums">
+            <td class="whitespace-nowrap px-4 py-3 text-right tabular-nums">
               {{ r.estado === 'si' ? r.pases : '—' }}<span class="text-[#A8A29E]"> / {{ r.pasesAsignados }}</span>
             </td>
             <td class="max-w-[10rem] px-4 py-3 text-[#57534E]">
