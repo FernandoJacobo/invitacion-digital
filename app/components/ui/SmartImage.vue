@@ -42,8 +42,9 @@ onMounted(() => {
       class="shimmer absolute inset-0"
       aria-hidden="true"
     >
+      <!-- Miniatura de 24 px estirada: el escalado del navegador ya la difumina (sin `filter: blur`, que es caro). -->
       <div
-        class="absolute inset-0 scale-110 bg-cover bg-center opacity-60 blur-xl"
+        class="absolute inset-0 bg-cover bg-center opacity-70"
         :style="{ backgroundImage: `url(${placeholder})` }"
       />
     </div>

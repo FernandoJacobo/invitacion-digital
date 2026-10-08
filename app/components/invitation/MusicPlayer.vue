@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Botón flotante de música con ecualizador animado. Se oculta si el archivo de audio no existe. */
+/** Botón flotante de música con ecualizador animado. Solo aparece si se confirmó que el audio existe. */
 const props = defineProps<{ available: boolean | null, playing: boolean, title?: string }>()
 defineEmits<{ toggle: [] }>()
 
@@ -14,7 +14,7 @@ const label = computed(() => (props.playing ? `Pausar música${props.title ? `: 
     leave-to-class="opacity-0 scale-90"
   >
     <button
-      v-if="available !== false"
+      v-if="available === true"
       type="button"
       class="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-40 grid size-14 place-items-center rounded-full border border-line bg-surface/90 text-ink shadow-lg backdrop-blur-md transition hover:scale-105"
       :aria-label="label"

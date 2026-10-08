@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { pasesLabel } from '~/utils/guest'
+import { monogramFor, nightStars } from '~/utils/ornaments'
 
 /**
  * Portada tipo sobre. Al tocarla: el sello se desvanece, la solapa gira, la carta sube
@@ -21,11 +22,7 @@ const phase = ref<'closed' | 'opening' | 'leaving'>('closed')
 const button = ref<HTMLButtonElement>()
 const isXv = config.tema.sobre === 'nocturno'
 
-const monogram = computed(() => {
-  if (config.novios) return `${config.novios.ella.nombre[0]}${config.novios.el.nombre[0]}`
-  if (config.festejada) return config.tipo === 'xv' ? 'XV' : config.festejada.nombre[0]
-  return config.titulo[0]
-})
+const monogram = monogramFor(config)
 
 const eyebrow = config.tipo === 'boda' ? 'Tienes una invitación a nuestra boda' : 'Tienes una invitación a mis XV años'
 
@@ -47,13 +44,12 @@ function open() {
 }
 
 
-// Estrellas del fondo nocturno (posiciones fijas para que no "salten" entre renders).
-const stars = Array.from({ length: 26 }, (_, i) => ({
-  left: `${(i * 37.3) % 100}%`,
-  top: `${(i * 61.7 + 7) % 100}%`,
-  size: 1 + ((i * 7) % 3),
-  delay: `${(i * 0.37) % 4}s`,
-}))
+const stars = nightStars()
+
+// Retira la portada estática del HTML generado (ver `utils/cover.ts`) cuando este sobre ya se pintó.
+onMounted(() => {
+  requestAnimationFrame(() => requestAnimationFrame(() => document.getElementById('static-cover')?.remove()))
+})
 </script>
 
 <template>
@@ -96,9 +92,12 @@ const stars = Array.from({ length: 26 }, (_, i) => ({
       <span class="env" aria-hidden="true">
         <span class="env-back" />
         <span class="env-letter">
-          <OrnamentsDivider :kind="config.tema.ornamentos" class="w-24 text-accent" />
-          <span class="mt-1 block font-script text-[clamp(1.6rem,7vw,2.1rem)] leading-tight text-ink">{{ config.titulo }}</span>
-          <span class="mt-1 block text-[0.65rem] tracking-[0.3em] text-muted">{{ formatDots(config.fecha) }}</span>
+          <!-- El contenido de la carta solo se monta al abrir: cerrada no se ve y así no compite por el LCP. -->
+          <template v-if="phase !== 'closed'">
+            <OrnamentsDivider :kind="config.tema.ornamentos" class="w-24 text-accent" />
+            <span class="mt-1 block font-script text-[clamp(1.6rem,7vw,2.1rem)] leading-tight text-ink">{{ config.titulo }}</span>
+            <span class="mt-1 block text-[0.65rem] tracking-[0.3em] text-muted">{{ formatDots(config.fecha) }}</span>
+          </template>
         </span>
         <svg class="env-pocket" viewBox="0 0 100 69" preserveAspectRatio="none">
           <polygon points="0,0 50,40 0,69" fill="var(--c-sobre)" />
@@ -169,11 +168,8 @@ const stars = Array.from({ length: 26 }, (_, i) => ({
   width: min(80vw, 340px);
   aspect-ratio: 100 / 69;
   perspective: 1100px;
-  filter: drop-shadow(0 26px 30px color-mix(in oklab, var(--c-tinta) 22%, transparent));
   animation: float-y 5s ease-in-out infinite;
-}
-.env-night .env {
-  filter: drop-shadow(0 26px 40px rgb(0 0 0 / 0.55));
+  will-change: transform;
 }
 .env > * {
   position: absolute;
@@ -182,6 +178,11 @@ const stars = Array.from({ length: 26 }, (_, i) => ({
   inset: 0;
   border-radius: 6px;
   background: linear-gradient(180deg, var(--c-sobre-sombra), color-mix(in oklab, var(--c-sobre-sombra) 85%, var(--c-sobre)));
+  /* box-shadow (no filter: drop-shadow): mucho más barato de pintar en celulares. */
+  box-shadow: 0 26px 30px -6px color-mix(in oklab, var(--c-tinta) 24%, transparent);
+}
+.env-night .env-back {
+  box-shadow: 0 26px 40px -6px rgb(0 0 0 / 0.55);
 }
 .env-letter {
   left: 7%;

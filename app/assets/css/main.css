@@ -278,15 +278,21 @@ html.no-scroll body {
   transform: none;
 }
 
-/* Skeleton con brillo para imágenes en carga. */
+/* Skeleton con brillo para imágenes en carga (solo `transform`: no repinta). */
 .shimmer {
-  background:
-    linear-gradient(100deg, transparent 20%, color-mix(in oklab, var(--c-superficie) 55%, transparent) 50%, transparent 80%) 0 0 / 200% 100%,
-    var(--c-superficie-alt);
+  overflow: hidden;
+  background: var(--c-superficie-alt);
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 20%, color-mix(in oklab, var(--c-superficie) 55%, transparent) 50%, transparent 80%);
+  transform: translate3d(-100%, 0, 0);
   animation: shimmer 1.6s linear infinite;
 }
 @keyframes shimmer {
-  to { background-position: -200% 0; }
+  to { transform: translate3d(100%, 0, 0); }
 }
 
 /* Indicador de scroll */
@@ -323,7 +329,7 @@ html.no-scroll body {
     transform: none;
     transition: none;
   }
-  .shimmer {
+  .shimmer::after {
     animation: none;
   }
 }

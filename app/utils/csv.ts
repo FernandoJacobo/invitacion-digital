@@ -57,7 +57,7 @@ export function parseGuestList(text: string, limits: { pasesPorDefecto: number, 
   const guests: ParsedGuest[] = []
   const warnings: GuestListResult['warnings'] = []
   const seen = new Set<string>()
-  const lines = text.replace(/^﻿/, '').split(/\r?\n/)
+  const lines = text.replace(new RegExp(`^${String.fromCharCode(0xFEFF)}`), '').split(/\r?\n/)
 
   lines.forEach((raw, index) => {
     const lineNumber = index + 1

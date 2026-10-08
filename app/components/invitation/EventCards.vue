@@ -62,7 +62,7 @@ const lugares = [config.ceremonia, config.recepcion].filter(Boolean) as Lugar[]
             {{ lugar.nota }}
           </p>
 
-          <div class="mt-auto grid gap-2.5 pt-6 sm:grid-cols-[1fr_auto]">
+          <div class="mt-auto grid grid-cols-[1fr_auto] gap-2.5 pt-6">
             <a :href="googleMapsUrl(lugar)" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
               <Icon name="lucide:navigation" class="size-4" />
               Cómo llegar
@@ -70,7 +70,7 @@ const lugares = [config.ceremonia, config.recepcion].filter(Boolean) as Lugar[]
             <a :href="wazeUrl(lugar)" target="_blank" rel="noopener" class="btn btn-outline btn-sm" :aria-label="`Abrir ${lugar.nombre} en Waze`">
               Waze
             </a>
-            <InvitationCalendarMenu :lugar="lugar" class="sm:col-span-2" />
+            <InvitationCalendarMenu :lugar="lugar" class="col-span-2" />
           </div>
         </div>
       </article>

@@ -6,7 +6,11 @@ const route = useRoute()
 const isAdmin = computed(() => route.path.startsWith('/admin'))
 
 // El HTML estático de cada invitación trae su color de fondo para el primer pintado; ya montada la app, el tema manda.
-onMounted(() => document.getElementById('boot-bg')?.remove())
+onMounted(() => {
+  document.getElementById('boot-bg')?.remove()
+  // Respaldo: si la ruta no monta un sobre (p. ej. error), la portada estática no debe quedarse encima.
+  setTimeout(() => document.getElementById('static-cover')?.remove(), 4000)
+})
 </script>
 
 <template>

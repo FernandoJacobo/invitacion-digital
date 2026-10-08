@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { RsvpData, RsvpResponse } from '~/utils/rsvp'
-import { createId } from '~/utils/rsvp'
+import { createId } from '~/utils/id'
 
 /**
  * Confirmaciones guardadas en `localStorage` (sin backend).
@@ -47,9 +47,7 @@ export const useRsvpStore = defineStore('rsvp', {
 
     remove(id: string) {
       this.responses = this.responses.filter(r => r.id !== id)
-      for (const [slug, mineId] of Object.entries(this.mine)) {
-        if (mineId === id) delete this.mine[slug]
-      }
+      this.mine = Object.fromEntries(Object.entries(this.mine).filter(([, mineId]) => mineId !== id))
     },
 
     addSamples(samples: RsvpResponse[]) {

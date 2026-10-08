@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { GuestEntry } from '~/utils/sample'
 import { normalizeName } from '~/utils/guest'
-import { createId } from '~/utils/rsvp'
+import { createId } from '~/utils/id'
 
 /** Lista de invitados creada desde el generador de enlaces del panel. */
 export const useGuestsStore = defineStore('guests', {

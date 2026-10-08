@@ -78,7 +78,7 @@ function submit() {
 
 function edit() {
   Object.assign(form, initialForm())
-  for (const k of Object.keys(touched)) delete touched[k as RsvpField]
+  for (const k of Object.keys(touched) as RsvpField[]) touched[k] = false
   celebrate.value = false
   editing.value = true
 }

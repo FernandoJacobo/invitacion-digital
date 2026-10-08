@@ -32,6 +32,16 @@ function onReveal() {
   opened.value = true
 }
 
+// Rendimiento: mientras el sobre está cerrado solo se monta lo visible (hero e intro). El resto de las
+// secciones (y sus chunks: galería, RSVP con zod, etc.) se monta al tocar el sobre: la animación de
+// apertura es CSS en el compositor y dura ~2 s, tiempo de sobra para preparar la página sin bloquear la carga.
+const showRest = ref(false)
+
+function onOpen() {
+  music.start()
+  showRest.value = true
+}
+
 useSeoMeta({
   title: config.seo.titulo,
   description: config.seo.descripcion,
@@ -56,7 +66,7 @@ useHead({
   <div class="inv" :data-theme="config.tema.id" :data-scheme="config.tema.esquema" :style="themeStyle(config)">
     <InvitationEnvelope
       v-if="envelope"
-      @open="music.start()"
+      @open="onOpen"
       @reveal="onReveal"
       @done="envelope = false"
     />
@@ -67,17 +77,19 @@ useHead({
     <main class="relative z-10" :inert="!opened" :aria-hidden="!opened">
       <InvitationHero />
       <InvitationIntro />
-      <InvitationCountdown />
-      <InvitationStory v-if="config.historia" />
-      <InvitationAboutMe v-if="config.sobreMi" />
-      <InvitationEventCards />
-      <InvitationItinerary v-if="config.itinerario?.length" />
-      <InvitationCourt v-if="config.corte || config.padrinos?.length" />
-      <InvitationGallery v-if="config.galeria?.length" />
-      <InvitationDressCode v-if="config.vestimenta" />
-      <InvitationRegistry v-if="config.regalos" />
-      <InvitationRsvp />
-      <InvitationFooter />
+      <template v-if="showRest">
+        <LazyInvitationCountdown />
+        <LazyInvitationStory v-if="config.historia" />
+        <LazyInvitationAboutMe v-if="config.sobreMi" />
+        <LazyInvitationEventCards />
+        <LazyInvitationItinerary v-if="config.itinerario?.length" />
+        <LazyInvitationCourt v-if="config.corte || config.padrinos?.length" />
+        <LazyInvitationGallery v-if="config.galeria?.length" />
+        <LazyInvitationDressCode v-if="config.vestimenta" />
+        <LazyInvitationRegistry v-if="config.regalos" />
+        <LazyInvitationRsvp />
+        <LazyInvitationFooter />
+      </template>
     </main>
 
     <InvitationMusicPlayer

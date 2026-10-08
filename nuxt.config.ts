@@ -1,10 +1,12 @@
-import { readdirSync, readFileSync } from 'node:fs'
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { addTemplate } from 'nuxt/kit'
 import tailwindcss from '@tailwindcss/vite'
 import { events } from './app/events'
 import { injectSocialMeta } from './app/utils/social-meta'
+import { staticCoverHtml } from './app/utils/cover'
+import { imageSrcset, imageUrl } from './app/utils/images'
 
 /** URL pública del sitio (para `og:url`). Cámbiala o define NUXT_PUBLIC_SITE_URL al desplegar. */
 const siteUrl = (process.env.NUXT_PUBLIC_SITE_URL || 'https://invitacion-digital-demo.pages.dev').replace(/\/+$/, '')
@@ -46,9 +48,34 @@ function collectFonts() {
     name,
     provider: 'google' as const,
     weights: [...weights].sort(),
-    styles: italic ? (['normal', 'italic'] as const) : (['normal'] as const),
+    styles: (italic ? ['normal', 'italic'] : ['normal']) as ('normal' | 'italic')[],
     display: 'swap' as const,
   }))
+}
+
+/**
+ * `<link rel="preload">` para los archivos woff2 (subconjunto latino) de las familias indicadas.
+ * Lee las @font-face que @nuxt/fonts dejó en el CSS generado; si no las encuentra, no agrega nada.
+ */
+function fontPreloadLinks(publicDir: string, families: { name: string, italic?: boolean }[]): string {
+  let css: string
+  try {
+    const dir = join(publicDir, '_nuxt')
+    css = readdirSync(dir).filter(f => f.endsWith('.css')).map(f => readFileSync(join(dir, f), 'utf8')).join('\n')
+  }
+  catch {
+    return ''
+  }
+  const urls = new Set<string>()
+  for (const face of css.match(/@font-face\{[^}]*\}/g) ?? []) {
+    // Subconjunto latino (el minificador lo escribe como `U+??`).
+    if (!/unicode-range:\s*U\+(?:0000-00FF|\?\?)[,;}]/i.test(face)) continue
+    const family = /font-family:\s*"?([^";]+?)"?\s*;/.exec(face)?.[1]
+    const italic = /font-style:\s*italic/.test(face)
+    const url = /url\((?:\.\.)?(\/_fonts\/[^)]+\.woff2)\)/.exec(face)?.[1]
+    if (url && families.some(f => f.name === family && !!f.italic === italic)) urls.add(url)
+  }
+  return [...urls].map(u => `<link rel="preload" as="font" type="font/woff2" href="${u}" crossorigin>`).join('')
 }
 
 export default defineNuxtConfig({
@@ -165,6 +192,7 @@ export default defineNuxtConfig({
         const slug = route.route.replace(/^\/+|\/+$/g, '')
         const event = events.find(e => e.slug === slug)
         if (!event) return
+
         route.contents = injectSocialMeta(route.contents, {
           title: event.seo.titulo,
           description: event.seo.descripcion,
@@ -174,6 +202,42 @@ export default defineNuxtConfig({
         })
           // Fondo del tema desde el primer pintado (evita el destello claro en temas oscuros).
           .replace('</head>', `<style id="boot-bg">html,body{background:${event.tema.colores.fondo}!important}</style></head>`)
+          // Portada estática del sobre en lugar del loader genérico: primer pintado útil sin esperar al JS.
+          // Va fuera de #__nuxt para que Nuxt no la borre al montar; `Envelope.vue` la retira cuando ya
+          // pintó su propio sobre (idéntico), así no hay parpadeo ni un segundo candidato a LCP.
+          .replace(/<div class="inv-boot"[\s\S]*?<\/svg>\s*<\/div>/, '')
+          .replace('</body>', () => `${staticCoverHtml(event)}</body>`)
+      })
+
+      // Precarga de fuentes críticas: se hace al terminar el build (`compiled`) porque el CSS con las @font-face
+      // todavía no está en disco mientras se generan las rutas.
+      nitro.hooks.hook('compiled', () => {
+        const publicDir = nitro.options.output.publicDir
+        const pages: [string, { name: string, italic?: boolean }[]][] = [
+          ['index.html', [{ name: 'Cormorant Garamond' }, { name: 'Cormorant Garamond', italic: true }, { name: 'Jost' }]],
+          ...events.map(e => [`${e.slug}.html`, [
+            { name: e.tema.tipografia.display, italic: e.tipo === 'boda' && e.tema.tipografia.displayItalica },
+            { name: e.tema.tipografia.cuerpo },
+            { name: e.tema.tipografia.script },
+          ]] as [string, { name: string, italic?: boolean }[]]),
+        ]
+        for (const [file, families] of pages) {
+          const path = join(publicDir, file)
+          try {
+            const html = readFileSync(path, 'utf8')
+            if (html.includes('as="font"')) continue
+            let extra = fontPreloadLinks(publicDir, families)
+            if (file === 'index.html' && events[0]) {
+              // Selector: la foto de la primera tarjeta es el LCP en móvil; se descubre antes con preload.
+              const src = events[0].fotoPrincipal.src
+              extra += `<link rel="preload" as="image" href="${imageUrl(src, 800)}" imagesrcset="${imageSrcset(src)}" imagesizes="(min-width: 768px) 560px, 100vw" fetchpriority="high">`
+            }
+            writeFileSync(path, html.replace('</head>', `${extra}</head>`))
+          }
+          catch {
+            // La ruta no se generó (p. ej. en `nuxt build`): nada que hacer.
+          }
+        }
       })
     },
   },

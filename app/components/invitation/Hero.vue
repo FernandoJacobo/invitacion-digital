@@ -56,7 +56,7 @@ function scrollNext() {
           <span data-rise style="--d: 250ms; --y: 24px" class="block font-display text-[clamp(3.6rem,17vw,8rem)] font-medium italic leading-[0.9]">
             {{ config.novios.ella.nombre }}
           </span>
-          <span data-rise style="--d: 450ms; --y: 8px" class="my-2 block font-script text-[clamp(3.6rem,15vw,6rem)] leading-none text-[#E8D4A6]" aria-label="y">&amp;</span>
+          <span data-rise style="--d: 450ms; --y: 8px" class="my-1 block font-display text-[clamp(2.8rem,12vw,5rem)] font-normal italic leading-none text-[#E8D4A6]" aria-label="y">&amp;</span>
           <span data-rise style="--d: 600ms; --y: 24px" class="block font-display text-[clamp(3.6rem,17vw,8rem)] font-medium italic leading-[0.9]">
             {{ config.novios.el.nombre }}
           </span>

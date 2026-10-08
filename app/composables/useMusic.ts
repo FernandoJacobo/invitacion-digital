@@ -65,13 +65,29 @@ export function useMusic(slug: string, src: string | undefined) {
     audio?.pause()
   }
 
+  /**
+   * Comprueba si el archivo existe y es audio. Se hace al abrir el sobre (no al cargar la página)
+   * para no generar peticiones ni errores 404 en consola antes de que el invitado interactúe.
+   * Con `_redirects` un archivo faltante responde `index.html` (200, text/html): también se descarta.
+   */
+  async function probe() {
+    if (!src || available.value !== null) return
+    try {
+      const res = await fetch(src, { method: 'HEAD', cache: 'no-store' })
+      const type = res.headers.get('content-type') ?? ''
+      const isAudio = res.ok && (!type || type.startsWith('audio/') || type.includes('octet-stream'))
+      if (available.value === null) available.value = isAudio
+    }
+    catch {
+      // Sin red: se decide al intentar reproducir.
+    }
+  }
+
   /** Llamar dentro del gesto del usuario (abrir el sobre). */
   function start() {
-    if (preference.value === 'off') {
-      ensureAudio()
-      return
-    }
-    void play()
+    if (preference.value === 'on') void play()
+    else ensureAudio()
+    void probe()
   }
 
   function toggle() {
@@ -84,20 +100,6 @@ export function useMusic(slug: string, src: string | undefined) {
       void play()
     }
   }
-
-  // Comprobación previa: si el archivo no existe o no es audio, el botón ni siquiera aparece.
-  onMounted(async () => {
-    if (!src) return
-    try {
-      const res = await fetch(src, { method: 'HEAD', cache: 'no-store' })
-      const type = res.headers.get('content-type') ?? ''
-      if (!res.ok || (type && !type.startsWith('audio/') && !type.includes('octet-stream'))) available.value = false
-      else if (available.value === null) available.value = true
-    }
-    catch {
-      // Sin red: se decide al intentar reproducir.
-    }
-  })
 
   const visibility = useDocumentVisibility()
   watch(visibility, (v) => {
