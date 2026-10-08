@@ -1,0 +1,14 @@
+<style>
+  html, body { margin: 0; background: #F7F3EC; }
+  .inv-boot { position: fixed; inset: 0; display: grid; place-items: center; }
+  .inv-boot svg { width: 44px; height: 44px; animation: inv-boot 1.4s ease-in-out infinite; }
+  @keyframes inv-boot { 0%, 100% { opacity: .35; transform: scale(.94); } 50% { opacity: 1; transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .inv-boot svg { animation: none; opacity: .8; } }
+</style>
+<div class="inv-boot" role="status" aria-label="Cargando invitación">
+  <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+    <rect x="5" y="11" width="38" height="26" rx="3" stroke="#B8975A" stroke-width="1.6" />
+    <path d="M5.8 12.2 24 27l18.2-14.8" stroke="#B8975A" stroke-width="1.6" stroke-linejoin="round" />
+    <circle cx="24" cy="27" r="4" fill="#B8975A" />
+  </svg>
+</div>

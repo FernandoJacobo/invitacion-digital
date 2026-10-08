@@ -1,0 +1,329 @@
+@import "tailwindcss";
+
+/* ───────────────────────── Tokens ─────────────────────────
+   Cada invitación define su paleta y tipografías en `app/events/*.ts`; la página las inyecta
+   como variables `--c-*` / `--f-*` en el contenedor `.inv`. Aquí van los valores por defecto
+   (selector de demos) y el mapeo a utilidades de Tailwind (`bg-bg`, `text-ink`, `font-display`…). */
+
+:root {
+  --c-fondo: #F7F3EC;
+  --c-superficie: #FFFDF9;
+  --c-superficie-alt: #EFE9DE;
+  --c-tinta: #24211D;
+  --c-tenue: #5E574D;
+  --c-primario: #2B2722;
+  --c-sobre-primario: #FFFDF9;
+  --c-acento: #B8975A;
+  --c-acento-tinta: #7D612B;
+  --c-linea: #E3DACB;
+  --c-sobre: #F1E9D9;
+  --c-sobre-sombra: #DCCDB0;
+  --c-sello: #6B7D5C;
+
+  --f-display: 'Cormorant Garamond';
+  --f-script: 'Pinyon Script';
+  --f-cuerpo: 'Jost';
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@theme inline {
+  --color-bg: var(--c-fondo);
+  --color-surface: var(--c-superficie);
+  --color-surface-alt: var(--c-superficie-alt);
+  --color-ink: var(--c-tinta);
+  --color-muted: var(--c-tenue);
+  --color-primary: var(--c-primario);
+  --color-on-primary: var(--c-sobre-primario);
+  --color-accent: var(--c-acento);
+  --color-accent-ink: var(--c-acento-tinta);
+  --color-line: var(--c-linea);
+
+  --font-display: var(--f-display), ui-serif, Georgia, serif;
+  --font-script: var(--f-script), cursive;
+  --font-body: var(--f-cuerpo), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  background: var(--c-fondo);
+  color: var(--c-tinta);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+[role="button"],
+a,
+label[for],
+summary,
+select {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 2px solid var(--c-acento-tinta);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--c-acento) 35%, transparent);
+}
+
+/* Bloqueo de scroll (sobre cerrado, lightbox). */
+html.no-scroll,
+html.no-scroll body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.sr-only-focusable:not(:focus):not(:focus-within) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ───────────────────────── Invitación ───────────────────────── */
+
+.inv {
+  background: var(--c-fondo);
+  color: var(--c-tinta);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  min-height: 100svh;
+  overflow-x: clip;
+}
+
+.inv[data-scheme="oscuro"] {
+  color-scheme: dark;
+}
+
+/* Eyebrow: etiqueta pequeña sobre los títulos. */
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--c-acento-tinta);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.005em;
+  font-size: clamp(2.25rem, 7vw, 3.5rem);
+  color: var(--c-tinta);
+  text-wrap: balance;
+}
+.inv[data-theme="xv"] .section-title {
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  font-size: clamp(1.9rem, 6.4vw, 3rem);
+}
+
+.card {
+  background: var(--c-superficie);
+  border: 1px solid var(--c-linea);
+  border-radius: 1.25rem;
+  box-shadow: 0 1px 0 color-mix(in oklab, white 40%, transparent) inset, 0 18px 40px -24px color-mix(in oklab, var(--c-tinta) 30%, transparent);
+}
+.inv[data-scheme="oscuro"] .card {
+  background: color-mix(in oklab, var(--c-superficie) 86%, transparent);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.05) inset, 0 24px 48px -28px rgb(0 0 0 / 0.7);
+}
+
+/* Botones */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0.75rem 1.4rem;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-align: center;
+  transition: transform 0.2s var(--ease-out-soft), background-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+  user-select: none;
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.btn-primary {
+  background: var(--c-primario);
+  color: var(--c-sobre-primario);
+  box-shadow: 0 10px 24px -14px color-mix(in oklab, var(--c-primario) 90%, transparent);
+}
+.btn-primary:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--c-primario) 88%, var(--c-tinta));
+}
+.btn-outline {
+  border: 1px solid color-mix(in oklab, var(--c-tinta) 22%, transparent);
+  color: var(--c-tinta);
+  background: transparent;
+}
+.btn-outline:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--c-tinta) 6%, transparent);
+}
+.btn-ghost {
+  color: var(--c-tinta);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--c-tinta) 7%, transparent);
+}
+.btn-sm {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+.btn:disabled {
+  opacity: 0.55;
+}
+
+/* Campos de formulario */
+.field-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+  color: var(--c-tinta);
+}
+.field {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.7rem 1rem;
+  border-radius: 0.875rem;
+  border: 1px solid color-mix(in oklab, var(--c-tinta) 20%, transparent);
+  background: var(--c-fondo);
+  color: var(--c-tinta);
+  font: inherit;
+  font-size: 1rem; /* evita el zoom automático de iOS */
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.inv[data-scheme="oscuro"] .field {
+  background: color-mix(in oklab, var(--c-fondo) 70%, black);
+}
+.field::placeholder {
+  color: color-mix(in oklab, var(--c-tenue) 80%, transparent);
+}
+.field:focus {
+  outline: none;
+  border-color: var(--c-acento-tinta);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--c-acento) 30%, transparent);
+}
+.field[aria-invalid="true"] {
+  border-color: #B4413A;
+}
+.inv[data-scheme="oscuro"] .field[aria-invalid="true"] {
+  border-color: #FF9C93;
+}
+.field-error {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: #A83A33;
+}
+.inv[data-scheme="oscuro"] .field-error {
+  color: #FFB0A8;
+}
+
+/* ───────────────────────── Animación de aparición (v-reveal) ───────────────────────── */
+
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition:
+    opacity 0.9s var(--ease-out-soft) var(--reveal-delay, 0ms),
+    transform 0.9s var(--ease-out-soft) var(--reveal-delay, 0ms);
+}
+.reveal[data-reveal="fade"] {
+  transform: none;
+}
+.reveal[data-reveal="left"] {
+  transform: translate3d(-24px, 0, 0);
+}
+.reveal[data-reveal="right"] {
+  transform: translate3d(24px, 0, 0);
+}
+.reveal[data-reveal="zoom"] {
+  transform: scale(0.94);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Skeleton con brillo para imágenes en carga. */
+.shimmer {
+  background:
+    linear-gradient(100deg, transparent 20%, color-mix(in oklab, var(--c-superficie) 55%, transparent) 50%, transparent 80%) 0 0 / 200% 100%,
+    var(--c-superficie-alt);
+  animation: shimmer 1.6s linear infinite;
+}
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
+/* Indicador de scroll */
+@keyframes scroll-cue {
+  0% { transform: translate3d(0, -6px, 0); opacity: 0; }
+  40% { opacity: 1; }
+  100% { transform: translate3d(0, 10px, 0); opacity: 0; }
+}
+
+/* Pulso suave para "Toca para abrir" */
+@keyframes soft-pulse {
+  0%, 100% { opacity: 0.55; transform: translate3d(0, 0, 0); }
+  50% { opacity: 1; transform: translate3d(0, -2px, 0); }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -6px, 0); }
+}
+
+/* ───────────────────────── Movimiento reducido ───────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal,
+  .reveal[data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .shimmer {
+    animation: none;
+  }
+}

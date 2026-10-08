@@ -1,0 +1,5 @@
+Coloca aquí la música de fondo (libre de derechos):
+  boda.mp3  -> invitación /boda
+  xv.mp3    -> invitación /xv
+La ruta se configura en app/events/*.ts (campo musica.src).
+Si el archivo no existe, el botón de música se oculta solo.
